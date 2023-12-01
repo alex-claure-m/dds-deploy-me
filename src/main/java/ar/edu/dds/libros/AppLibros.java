@@ -33,14 +33,34 @@ public class AppLibros {
 		Javalin app = Javalin.create().start(port);
 		
 		LibrosController controller = new LibrosController(entityManagerFactory); 
-		
+
+		//uno para listar y otro para agregar libro
 		app.get("/libros", controller::listLibros);
 		app.post("/libros", controller::addLibro);
 		
 	}
 	
-	
-	
+	// este cacho de codigo es el que crea el entitymanager
+	// que basicamente es como nosotros tenemos en entity manager
+	// pero claro, nosotros teniamos un xml de persistence a nivel local
+	// debemos tener una clase o metodo que haga que creemos un entity manager para cada microservicio
+	//ya sea para la base de datos, para el deploy , otro para el local etc.
+	// entonces lo que hace esta funcion
+	// es agarrar del array de todas las persistencias.xml y se si existe una variable de entorno que se llame
+	//javax__persistence__jdbc__driver
+	//otra para: javax__persistence__jdbc__password
+	// etc
+	// si existe, lo que hacemos es llenar esta configuracion que es un hashmap (configOverride)
+	/*
+	* lo que hace este configOverride
+	* es que retornara un : return Persistence.createEntityManagerFactory("db", configOverrides);
+	* donde db seria en mi caso el "Simple_etc" de mi db
+	*
+	* de donde sale las variables de entorno?
+	* 	-> se la debemos pasar. pero Como? configurandolo
+	* 	-> en intellij y eclipse es en Run Configuration (pero antes, hacer run por mas que se rompa)
+	* 	-> MIRAR WORD COMO ESTA CONFIGURADO:
+	* */
 	public static EntityManagerFactory createEntityManagerFactory() throws Exception {
 		// https://stackoverflow.com/questions/8836834/read-environment-variables-in-persistence-xml-file
 		Map<String, String> env = System.getenv();
@@ -48,19 +68,22 @@ public class AppLibros {
 
 		String[] keys = new String[] { 
 			"DATABASE_URL",
-			"javax__persistence__jdbc__driver",
-			"javax__persistence__jdbc__password",
-			"javax__persistence__jdbc__url",
-			"javax__persistence__jdbc__user",
-			"hibernate__hbm2ddl__auto",
-			"hibernate__connection__pool_size", 
-			"hibernate__show_sql" };
+			"javax.persistence.jdbc.driver",
+			"javax.persistence.jdbc.password",
+			"javax.persistence.jdbc.url",
+			"javax.persistence.jdbc.user",
+			"hibernate.hbm2ddl.auto",
+			"hibernate.connection.pool_size",
+			"hibernate.show_sql" };
 
 		for (String key : keys) {
                
 		    try{
 			if (key.equals("DATABASE_URL")) {
-                    
+ 
+
+				//esto mepa que es para que guarde en  local!
+
 				// https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-java
 				String value = env.get(key);
 				URI dbUri = new URI(value);
@@ -91,4 +114,5 @@ public class AppLibros {
 		}
 		return Persistence.createEntityManagerFactory("db", configOverrides);
 	}
+
 }

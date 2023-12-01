@@ -1,0 +1,15 @@
+cuando laburemos en produccion
+y tengamos que hacer estos deploys
+no vamos a trabajar en el ambito local
+sino mas bien va a ser un persistence por cada microservicio
+
+y no va a ser en el localhost
+debe estar en otro lugar
+
+entonces hare un persistence para deploy
+otro persistence para produccion - mi compu
+
+necesitamos el archivo persistence.xml para hacer la carga original
++ el metodo que esta en applibros.java para persistir a cada uno donde yo quiera que persista
+-- public static EntityManagerFactory createEntityManagerFactory() throws Exception
+

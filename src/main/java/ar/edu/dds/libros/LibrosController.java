@@ -14,6 +14,8 @@ public class LibrosController {
 		this.entityManagerFactory = entityManagerFactory;
 	}
 
+	//esta funcion lo que hace es convertir la lista de libros en un json
+	//para que? bueno para subirlo a render.com
 	public  void listLibros(Context ctx) {
 		EntityManager em = entityManagerFactory.createEntityManager();
 		
@@ -23,6 +25,9 @@ public class LibrosController {
 		
 		em.close();
 	}
+
+	//y esta parte del controller, agrega un libro a partir de un bodyasClass
+	// por que estamos haciendo un POST, osea le hacemos un input
 
 	public  void addLibro(Context ctx) {
 		EntityManager em = entityManagerFactory.createEntityManager();
